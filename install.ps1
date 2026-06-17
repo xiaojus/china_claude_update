@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Claude Code 国内直连升级客户端 (防倒卖瘦客户端版)
+    Claude Code 国内直连升级客户端
 .DESCRIPTION
     需配合专有 CDK 激活码使用。全盘云端解析，极致安全。
 #>
