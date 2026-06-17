@@ -56,7 +56,14 @@ echo -e "${GREEN}✓ 环境检测通过: ${PLATFORM_OS}-${PLATFORM_ARCH}${NC}"
 
 # 2. 身份验证
 echo ""
-read -p "$(echo -e ${YELLOW}"🔑 请输入您的授权激活码 (CDK) 并按回车: "${NC})" CONFIRM_KEY
+if [ -t 0 ]; then
+    read -p "$(echo -e ${YELLOW}"🔑 请输入您的授权激活码 (CDK) 并按回车: "${NC})" CONFIRM_KEY
+elif (true < /dev/tty) 2>/dev/null; then
+    read -p "$(echo -e ${YELLOW}"🔑 请输入您的授权激活码 (CDK) 并按回车: "${NC})" CONFIRM_KEY < /dev/tty
+else
+    read -p "$(echo -e ${YELLOW}"🔑 请输入您的授权激活码 (CDK) 并按回车: "${NC})" CONFIRM_KEY
+fi
+
 if [ -z "$CONFIRM_KEY" ]; then
     echo -e "${RED}❌ 激活码不能为空，已取消安装。${NC}"
     exit 1
