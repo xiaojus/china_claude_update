@@ -2,19 +2,19 @@
 .SYNOPSIS
     Claude Code 国内直连升级客户端
 .DESCRIPTION
-    需配合专有 CDK 激活码使用。全盘云端解析，极致安全。
+    需配合专有 CDK 激活码使用。
 #>
 
 $ErrorActionPreference = "Stop"
 
-# === 【配置区】在这里填入你部署好的 Cloudflare Worker 地址 ===
+# === 【配置区】API 请求网关地址 ===
 $API_URL = "https://claude-api.lmin.site/"
 
 Write-Host "====================================================" -ForegroundColor Cyan
 Write-Host "✨ 欢迎使用 Claude Code 国内直连升级助手 (Windows版) ✨" -ForegroundColor Green
 Write-Host "====================================================" -ForegroundColor Cyan
 
-# 1. 环境嗅探
+# 1. 环境检测
 $Arch = $env:PROCESSOR_ARCHITECTURE
 $PlatformArch = ""
 
@@ -47,7 +47,7 @@ if ($ExistingClaude -and $ExistingClaude.Source) {
     Write-Host "`n🎯 准备执行全新安装，目标路径: $TargetPath" -ForegroundColor Yellow
 }
 
-# 4. 云端鉴权与元数据解析
+# 4. 授权验证与配置匹配
 Write-Host "🔍 正在连接云端服务器验证授权并匹配加速节点..." -ForegroundColor Yellow
 $RequestUrl = "$API_URL/?key=$ConfirmKey&os=win32&arch=$PlatformArch"
 
@@ -68,7 +68,7 @@ $TarballUrl = $ApiResponse.tarball
 $RemoteVersion = $ApiResponse.version
 Write-Host "✓ 云端分配最新版本为 v$RemoteVersion" -ForegroundColor Green
 
-# 5. 本地版本比对拦截
+# 5. 本地版本比对
 if (Test-Path $TargetPath) {
     $LocalVersionString = & $TargetPath --version 2>$null
     if ($LocalVersionString -match '(\d+\.\d+\.\d+)') {
@@ -81,7 +81,7 @@ if (Test-Path $TargetPath) {
     }
 }
 
-# 6. 下载压缩包
+# 6. 下载安装包
 $TmpDir = Join-Path $env:TEMP "claude_updater_tmp_$(Get-Random)"
 New-Item -ItemType Directory -Force -Path $TmpDir | Out-Null
 $TgzPath = Join-Path $TmpDir "payload.tgz"
@@ -89,7 +89,7 @@ $TgzPath = Join-Path $TmpDir "payload.tgz"
 Write-Host "📥 正在通过骨干网高速下载原生二进制包..." -ForegroundColor Yellow
 Invoke-WebRequest -Uri $TarballUrl -OutFile $TgzPath -UseBasicParsing
 
-# 7. 解压压缩包
+# 7. 解压缩包
 Write-Host "📦 正在执行解压与二进制提取..." -ForegroundColor Yellow
 Set-Location -Path $TmpDir
 try {
@@ -121,8 +121,8 @@ try {
         Write-Host "⚠️ 已将 $TargetDir 添加到您的用户 PATH 环境变量中，请重启终端使其生效。" -ForegroundColor Yellow
     }
 
-    # 10. 尝试后台执行官方终端集成 (失败时静默跳过)
-    Write-Host "🔄 正在后台配置官方终端集成与 Shell 补全..." -ForegroundColor Yellow
+    # 10. 初始化配置
+    Write-Host "🔄 正在后台初始化系统配置..." -ForegroundColor Yellow
     Start-Process -FilePath $TargetPath -ArgumentList "install --force" -WindowStyle Hidden -ErrorAction SilentlyContinue
 } finally {
     Set-Location -Path $env:USERPROFILE

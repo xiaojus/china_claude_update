@@ -5,7 +5,7 @@
 
 set -e
 
-# === 【配置区】在这里填入你部署好的 Cloudflare Worker 地址 ===
+# === 【配置区】API 请求网关地址 ===
 API_URL="https://claude-api.lmin.site/"
 
 # 颜色定义
@@ -78,10 +78,9 @@ else
     echo -e "\n${YELLOW}🎯 准备执行全新安装，目标路径: $TARGET_PATH${NC}"
 fi
 
-# 4. 云端鉴权与元数据解析
+# 4. 授权验证与配置匹配
 echo -e "${YELLOW}🔍 正在连接云端服务器验证授权并匹配加速节点...${NC}"
 
-# 调用 API 获取解析结果 (使用 jq 提取字段或使用 grep+awk 纯原生提取)
 REQUEST_URL="$API_URL/?key=$CONFIRM_KEY&os=$PLATFORM_OS&arch=$PLATFORM_ARCH"
 
 if ! HTTP_RESPONSE=$(curl -sS -w "\n%{http_code}" "$REQUEST_URL"); then
@@ -97,7 +96,6 @@ if [ "$HTTP_STATUS" -ne 200 ]; then
     exit 1
 fi
 
-# 简单解析 JSON 中的 success, message, version, tarball
 SUCCESS=$(echo "$HTTP_BODY" | grep -o '"success":\(true\|false\)' | cut -d':' -f2)
 MESSAGE=$(echo "$HTTP_BODY" | grep -o '"message":"[^"]*"' | cut -d'"' -f4)
 
@@ -118,10 +116,9 @@ fi
 
 echo -e "${GREEN}✓ 云端分配最新版本为 v$REMOTE_VERSION${NC}"
 
-# 5. 本地版本比对拦截
+# 5. 本地版本比对
 if [ -f "$TARGET_PATH" ]; then
     LOCAL_VERSION=$("$TARGET_PATH" --version 2>/dev/null || true)
-    # 提取版本号 (例如 v2.1.179 中的 2.1.179)
     LOCAL_VERSION=$(echo "$LOCAL_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
     
     if [ "$LOCAL_VERSION" = "$REMOTE_VERSION" ]; then
@@ -131,7 +128,7 @@ if [ -f "$TARGET_PATH" ]; then
     fi
 fi
 
-# 6. 下载与解压
+# 6. 下载安装包
 TMP_DIR=$(mktemp -d)
 cd "$TMP_DIR"
 
@@ -176,8 +173,8 @@ if [[ ":$PATH:" != *":$(dirname "$TARGET_PATH"):"* ]]; then
     fi
 fi
 
-# 9. 尝试后台执行官方终端集成 (失败时静默跳过)
-echo -e "${YELLOW}🔄 正在后台配置官方终端集成与 Shell 补全...${NC}"
+# 9. 初始化配置
+echo -e "${YELLOW}🔄 正在后台初始化系统配置...${NC}"
 "$TARGET_PATH" install --force >/dev/null 2>&1 &
 
 cd "$HOME"
