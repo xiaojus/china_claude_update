@@ -6,7 +6,7 @@
 set -e
 
 # === 【配置区】在这里填入你部署好的 Cloudflare Worker 地址 ===
-API_URL="https://frosty-cell-9e26.figma-richards.workers.dev/"
+API_URL="https://claude-api.lmin.site/"
 
 # 颜色定义
 RED='\033[0;31m'

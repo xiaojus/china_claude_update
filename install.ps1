@@ -8,7 +8,7 @@
 $ErrorActionPreference = "Stop"
 
 # === 【配置区】在这里填入你部署好的 Cloudflare Worker 地址 ===
-$API_URL = "https://frosty-cell-9e26.figma-richards.workers.dev/"
+$API_URL = "https://claude-api.lmin.site/"
 
 Write-Host "====================================================" -ForegroundColor Cyan
 Write-Host "✨ 欢迎使用 Claude Code 国内直连升级助手 (Windows版) ✨" -ForegroundColor Green
