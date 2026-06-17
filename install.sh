@@ -150,7 +150,7 @@ fi
 # 7. 核心安装逻辑 (复刻官方行为)
 echo -e "${YELLOW}🚀 正在调用官方内核进行环境与终端集成配置...${NC}"
 chmod +x package/claude
-./package/claude install
+./package/claude install --force
 
 cd "$HOME"
 rm -rf "$TMP_DIR"

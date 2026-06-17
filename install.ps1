@@ -110,7 +110,7 @@ if (-not (Test-Path $ExtractedExe)) {
 # 8. 核心安装逻辑 (复刻官方行为)
 Write-Host "🚀 正在调用官方内核进行环境与终端集成配置..." -ForegroundColor Yellow
 try {
-    & $ExtractedExe install
+    & $ExtractedExe install --force
     $installExitCode = $LASTEXITCODE
 } finally {
     Set-Location -Path $env:USERPROFILE
