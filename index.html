@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code - 极速直连版</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 背景动态发光球 -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <main class="container">
+    <header class="hero">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        国内节点 实时同步
+      </div>
+      <h1 class="title">Claude Code<br><span class="gradient-text">国内极速直连版</span></h1>
+      <p class="subtitle">
+        告别 npm 配置与代理节点墙。<br>
+        一键获取 Anthropic 官方原生体验，原子级覆盖，极速安装。
+      </p>
+    </header>
+
+    <section class="code-section">
+      <div class="tab-header">
+        <button class="tab-btn active" onclick="switchTab('windows')">Windows (PowerShell)</button>
+        <button class="tab-btn" onclick="switchTab('mac')">macOS / Linux</button>
+      </div>
+
+      <!-- Windows Snippet -->
+      <div id="windows" class="code-container active">
+        <div class="code-window">
+          <div class="window-controls">
+            <span class="dot close"></span>
+            <span class="dot minimize"></span>
+            <span class="dot expand"></span>
+            <span class="window-title">PowerShell</span>
+          </div>
+          <div class="code-content">
+            <pre><code id="code-win">irm <span class="highlight">https://你的Vercel域名.vercel.app/install.ps1</span> | iex</code></pre>
+            <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <div class="source-view-toggle" onclick="toggleSource('win-source', 'install.ps1')">
+            <span>👀 查看将要执行的源码 (透明公开)</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div id="win-source" class="source-content">
+            <pre><code class="language-powershell">Loading...</code></pre>
+            <a href="/install.ps1" download="install.ps1" class="download-link">⬇️ 手动下载脚本</a>
+          </div>
+        </div>
+        <p class="helper-text">💡 提示：打开系统自带的 PowerShell，直接粘贴回车即可自动配置。绝对安全，支持审计源码。</p>
+      </div>
+
+      <!-- Mac/Linux Snippet -->
+      <div id="mac" class="code-container">
+        <div class="code-window">
+          <div class="window-controls">
+            <span class="dot close"></span>
+            <span class="dot minimize"></span>
+            <span class="dot expand"></span>
+            <span class="window-title">Terminal</span>
+          </div>
+          <div class="code-content">
+            <pre><code id="code-mac">curl -fsSL <span class="highlight">https://你的Vercel域名.vercel.app/install.sh</span> | bash</code></pre>
+            <button class="copy-btn" onclick="copyCode('code-mac')" title="复制代码">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <div class="source-view-toggle" onclick="toggleSource('mac-source', 'install.sh')">
+            <span>👀 查看将要执行的源码 (透明公开)</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div id="mac-source" class="source-content">
+            <pre><code class="language-bash">Loading...</code></pre>
+            <a href="/install.sh" download="install.sh" class="download-link">⬇️ 手动下载脚本</a>
+          </div>
+        </div>
+        <p class="helper-text">💡 提示：打开终端 (Terminal)，直接粘贴回车即可。绝对安全，支持审计源码。</p>
+      </div>
+    </section>
+
+    <footer class="features">
+      <div class="feature-item">
+        <div class="icon">⚡</div>
+        <h3>毫秒级解析</h3>
+        <p>CDN 全球边缘节点加速</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🛡️</div>
+        <h3>官方原生内核</h3>
+        <p>1:1 保留所有环境注入能力</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🔒</div>
+        <h3>独家 CDK 鉴权</h3>
+        <p>一人一码，防滥用封禁保护</p>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function switchTab(platform) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.code-container').forEach(container => container.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(platform).classList.add('active');
+    }
+
+    function copyCode(elementId) {
+      const codeText = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 2000);
+      });
+    }
+    function toggleSource(containerId, filename) {
+      const container = document.getElementById(containerId);
+      const isExpanded = container.classList.contains('expanded');
+      
+      if (!isExpanded) {
+        // Fetch source if not already loaded
+        const codeBlock = container.querySelector('code');
+        if (codeBlock.textContent === 'Loading...') {
+          fetch('/' + filename)
+            .then(res => res.text())
+            .then(text => {
+              codeBlock.textContent = text;
+            })
+            .catch(err => {
+              codeBlock.textContent = 'Failed to load source code. Please download it manually.';
+            });
+        }
+        container.classList.add('expanded');
+        event.currentTarget.querySelector('svg').style.transform = 'rotate(180deg)';
+      } else {
+        container.classList.remove('expanded');
+        event.currentTarget.querySelector('svg').style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
+</body>
+</html>
