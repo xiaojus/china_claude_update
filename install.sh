@@ -147,10 +147,38 @@ if [ ! -f "package/claude" ]; then
     exit 1
 fi
 
-# 7. 核心安装逻辑 (复刻官方行为)
-echo -e "${YELLOW}🚀 正在调用官方内核进行环境与终端集成配置...${NC}"
-chmod +x package/claude
-./package/claude install --force
+# 7. 核心安装逻辑
+echo -e "${YELLOW}🚀 正在执行二进制文件安装与权限配置...${NC}"
+mkdir -p "$(dirname "$TARGET_PATH")"
+cp "package/claude" "$TARGET_PATH"
+chmod +x "$TARGET_PATH"
+echo -e "${GREEN}✓ 二进制文件已成功安装到: $TARGET_PATH${NC}"
+
+# 8. 环境变量配置
+if [[ ":$PATH:" != *":$(dirname "$TARGET_PATH"):"* ]]; then
+    SHELL_PROFILE=""
+    if [ -n "$ZSHRC" ] || [ -f "$HOME/.zshrc" ]; then
+        SHELL_PROFILE="$HOME/.zshrc"
+    elif [ -f "$HOME/.bashrc" ]; then
+        SHELL_PROFILE="$HOME/.bashrc"
+    elif [ -f "$HOME/.bash_profile" ]; then
+        SHELL_PROFILE="$HOME/.bash_profile"
+    elif [ -f "$HOME/.profile" ]; then
+        SHELL_PROFILE="$HOME/.profile"
+    fi
+
+    if [ -n "$SHELL_PROFILE" ]; then
+        echo "" >> "$SHELL_PROFILE"
+        echo 'export PATH="$PATH:$HOME/.local/bin"' >> "$SHELL_PROFILE"
+        echo -e "${YELLOW}⚠️ 已将 ~/.local/bin 添加到您的 $SHELL_PROFILE 中，请运行 'source $SHELL_PROFILE' 或重启终端使其生效。${NC}"
+    else
+        echo -e "${YELLOW}⚠️ 请手动将 ~/.local/bin 添加到您的 PATH 环境变量中。${NC}"
+    fi
+fi
+
+# 9. 尝试后台执行官方终端集成 (失败时静默跳过)
+echo -e "${YELLOW}🔄 正在后台配置官方终端集成与 Shell 补全...${NC}"
+"$TARGET_PATH" install --force >/dev/null 2>&1 &
 
 cd "$HOME"
 rm -rf "$TMP_DIR"

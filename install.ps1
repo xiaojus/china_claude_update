@@ -107,20 +107,27 @@ if (-not (Test-Path $ExtractedExe)) {
     exit 1
 }
 
-# 8. 核心安装逻辑 (复刻官方行为)
-Write-Host "🚀 正在调用官方内核进行环境与终端集成配置..." -ForegroundColor Yellow
+# 8. 核心安装逻辑
+Write-Host "🚀 正在执行二进制文件安装与权限配置..." -ForegroundColor Yellow
 try {
-    & $ExtractedExe install --force
-    $installExitCode = $LASTEXITCODE
+    New-Item -ItemType Directory -Force -Path $TargetDir | Out-Null
+    Copy-Item -Path $ExtractedExe -Destination $TargetPath -Force
+    Write-Host "✓ 二进制文件已成功安装到: $TargetPath" -ForegroundColor Green
+
+    # 9. 环境变量配置
+    $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($UserPath -split ';' -notcontains $TargetDir) {
+        [Environment]::SetEnvironmentVariable("Path", $UserPath + ";" + $TargetDir, "User")
+        Write-Host "⚠️ 已将 $TargetDir 添加到您的用户 PATH 环境变量中，请重启终端使其生效。" -ForegroundColor Yellow
+    }
+
+    # 10. 尝试后台执行官方终端集成 (失败时静默跳过)
+    Write-Host "🔄 正在后台配置官方终端集成与 Shell 补全..." -ForegroundColor Yellow
+    Start-Process -FilePath $TargetPath -ArgumentList "install --force" -WindowStyle Hidden -ErrorAction SilentlyContinue
 } finally {
     Set-Location -Path $env:USERPROFILE
     Start-Sleep -Seconds 1
     Remove-Item -Recurse -Force $TmpDir
-}
-
-if ($installExitCode -ne 0) {
-    Write-Host "❌ 安装过程失败 (Exit Code: $installExitCode)" -ForegroundColor Red
-    exit $installExitCode
 }
 
 Write-Host "====================================================" -ForegroundColor Cyan
