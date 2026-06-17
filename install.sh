@@ -84,9 +84,18 @@ echo -e "${YELLOW}🔍 正在连接云端服务器验证授权并匹配加速节
 # 调用 API 获取解析结果 (使用 jq 提取字段或使用 grep+awk 纯原生提取)
 REQUEST_URL="$API_URL/?key=$CONFIRM_KEY&os=$PLATFORM_OS&arch=$PLATFORM_ARCH"
 
-HTTP_RESPONSE=$(curl -s -w "\n%{http_code}" "$REQUEST_URL")
+if ! HTTP_RESPONSE=$(curl -sS -w "\n%{http_code}" "$REQUEST_URL"); then
+    echo -e "${RED}❌ 连接云端验证服务器失败，请检查网络或 DNS 解析。${NC}"
+    exit 1
+fi
 HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed '$d')
 HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tail -n1)
+
+if [ "$HTTP_STATUS" -ne 200 ]; then
+    echo -e "${RED}❌ 云端服务器返回异常状态码: $HTTP_STATUS${NC}"
+    echo -e "${RED}响应内容: $HTTP_BODY${NC}"
+    exit 1
+fi
 
 # 简单解析 JSON 中的 success, message, version, tarball
 SUCCESS=$(echo "$HTTP_BODY" | grep -o '"success":\(true\|false\)' | cut -d':' -f2)
