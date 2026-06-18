@@ -12,12 +12,13 @@
 </head>
 
 <body>
-  <!-- 背景动态发光球 -->
+  <!-- 背景动态发光球和网格 -->
+  <div class="bg-grid"></div>
   <div class="glow-orb orb-1"></div>
   <div class="glow-orb orb-2"></div>
 
   <main class="container">
-    <header class="hero">
+    <header class="hero animate-up" style="animation-delay: 0.1s;">
       <div class="badge">
         <span class="badge-dot"></span>
         国内节点 实时同步
@@ -27,9 +28,14 @@
         告别 npm 配置与代理节点墙。<br>
         一键获取 Anthropic 官方原生体验，原子级覆盖，极速安装。
       </p>
+      <div class="cta-group">
+        <a href="#purchase" class="btn-primary" onclick="alert('这里可以替换为您的发卡网链接！')">
+          <span class="btn-icon">🛒</span> 获取商业授权码 (CDK)
+        </a>
+      </div>
     </header>
 
-    <section class="code-section">
+    <section class="code-section animate-up" style="animation-delay: 0.2s;">
       <div class="tab-header">
         <button class="tab-btn active" onclick="switchTab('windows')">Windows (PowerShell)</button>
         <button class="tab-btn" onclick="switchTab('mac')">macOS / Linux</button>
@@ -104,21 +110,36 @@
       </div>
     </section>
 
-    <footer class="features">
+    <footer class="features animate-up" style="animation-delay: 0.3s;">
       <div class="feature-item">
-        <div class="icon">⚡</div>
+        <div class="icon glow">⚡</div>
         <h3>毫秒级解析</h3>
-        <p>CDN 全球边缘节点加速</p>
+        <p>CDN 全球边缘节点加速，极速无感直连</p>
       </div>
       <div class="feature-item">
-        <div class="icon">🛡️</div>
+        <div class="icon glow">🛡️</div>
         <h3>官方原生内核</h3>
-        <p>1:1 保留所有环境注入能力</p>
+        <p>1:1 保留所有环境注入能力，透明开源安全</p>
       </div>
       <div class="feature-item">
-        <div class="icon">🔒</div>
-        <h3>独家 CDK 鉴权</h3>
-        <p>一人一码，防滥用封禁保护</p>
+        <div class="icon glow">🔒</div>
+        <h3>一机一码鉴权</h3>
+        <p>硬件级设备特征码绑定，一次激活长久有效</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon glow">🔄</div>
+        <h3>开发/沙盒友好</h3>
+        <p>专属高级配置额度，无惧 Windows Sandbox 频刷</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon glow">📦</div>
+        <h3>无缝自动更新</h3>
+        <p>每次唤醒自动与云端校验，静默热更新至最新版</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon glow">💻</div>
+        <h3>全平台无感部署</h3>
+        <p>Windows, macOS, Linux 支持一键粘贴执行部署</p>
       </div>
     </footer>
   </main>
