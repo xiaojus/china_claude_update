@@ -51,7 +51,7 @@
             <span class="window-title">PowerShell</span>
           </div>
           <div class="code-content">
-            <pre><code id="code-win">irm <span class="highlight">https://claude.lmin.site/install.ps1</span> | iex</code></pre>
+            <pre><code id="code-win">iwr https://claude.lmin.site/install.ps1 -useb -o i.ps1; powershell -ep bypass -f i.ps1; rm i.ps1</code></pre>
             <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
