@@ -269,6 +269,121 @@ pre {
   padding-left: 8px;
 }
 
+/* Comparison Section */
+.comparison-section {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.comparison-card {
+  background: rgba(24, 24, 27, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.pain-card {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.pain-card:hover {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.1);
+}
+
+.solution-card {
+  border-color: rgba(16, 185, 129, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.solution-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  box-shadow: inset 0 0 30px rgba(16, 185, 129, 0.05);
+  pointer-events: none;
+}
+
+.solution-card:hover {
+  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header .icon {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+.card-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.comparison-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comparison-list li {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.comparison-list li b {
+  color: #fff;
+  font-weight: 500;
+}
+
+.x-mark {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.check-mark {
+  color: #10b981;
+  font-weight: bold;
+}
+
 /* Features */
 .features {
   display: grid;
@@ -316,6 +431,7 @@ pre {
 /* Responsive */
 @media (max-width: 768px) {
   .title { font-size: 2.5rem; }
+  .comparison-grid { grid-template-columns: 1fr; }
   .features { grid-template-columns: 1fr; }
   .code-content { flex-direction: column; align-items: flex-start; gap: 16px; }
   .copy-btn { align-self: flex-end; }

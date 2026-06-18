@@ -51,7 +51,7 @@
             <span class="window-title">PowerShell</span>
           </div>
           <div class="code-content">
-            <pre><code id="code-win">irm <span class="highlight">https://claude.lmin.site/install.ps1</span> | iex</code></pre>
+            <pre><code id="code-win">powershell -NoProfile -ExecutionPolicy Bypass -Command "[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; irm <span class="highlight">https://claude.lmin.site/install.ps1</span> | iex"</code></pre>
             <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +72,7 @@
             <a href="/install.ps1" download="install.ps1" class="download-link">⬇️ 手动下载脚本</a>
           </div>
         </div>
-        <p class="helper-text">💡 提示：打开系统自带的 PowerShell，直接粘贴回车即可自动配置。绝对安全，支持审计源码。</p>
+        <p class="helper-text">💡 提示：打开系统自带的 CMD 或 PowerShell 终端，直接粘贴回车即可自动执行。绝对安全，支持审计源码。</p>
       </div>
 
       <!-- Mac/Linux Snippet -->
@@ -110,7 +110,35 @@
       </div>
     </section>
 
-    <footer class="features animate-up" style="animation-delay: 0.3s;">
+    <section class="comparison-section animate-up" style="animation-delay: 0.3s;">
+      <h2 class="section-title">为什么选择极速直连版？</h2>
+      <div class="comparison-grid">
+        <div class="comparison-card pain-card">
+          <div class="card-header">
+            <span class="icon">🔴</span>
+            <h3>传统官方安装痛点</h3>
+          </div>
+          <ul class="comparison-list">
+            <li><span class="x-mark">✖</span> <b>网络高墙困扰</b>：npm install 频繁超时，需繁琐配置终端代理环境。</li>
+            <li><span class="x-mark">✖</span> <b>环境依赖苛刻</b>：必须预先安装 Node.js 与 npm 环境，容易引发版本冲突。</li>
+            <li><span class="x-mark">✖</span> <b>更新维护痛苦</b>：工具处于高频迭代期，每次更新都要重新对抗恶劣网络。</li>
+          </ul>
+        </div>
+        <div class="comparison-card solution-card">
+          <div class="card-header">
+            <span class="icon glow">🟢</span>
+            <h3>我们的极速直连方案</h3>
+          </div>
+          <ul class="comparison-list">
+            <li><span class="check-mark">✔</span> <b>国内节点秒开</b>：专线 CDN 分发原生程序，无需翻墙、零代理配置。</li>
+            <li><span class="check-mark">✔</span> <b>零环境开箱即用</b>：彻底摆脱 Node.js 依赖，仅需粘贴一行命令瞬间部署。</li>
+            <li><span class="check-mark">✔</span> <b>热更新与防盗版</b>：任意终端一键无感热升级，搭配一机一码授权长久稳定。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="features animate-up" style="animation-delay: 0.4s;">
       <div class="feature-item">
         <div class="icon glow">⚡</div>
         <h3>毫秒级解析</h3>
