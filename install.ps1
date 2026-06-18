@@ -48,9 +48,20 @@ if ($ExistingClaude -and $ExistingClaude.Source) {
     Write-Host "`n🎯 准备执行全新安装，目标路径: $TargetPath" -ForegroundColor Yellow
 }
 
-# 4. 授权验证与配置匹配
+# 4. 提取设备唯一标识符 (Machine ID)
+$MachineId = ""
+try {
+    $MachineId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Cryptography' -Name 'MachineGuid' -ErrorAction Stop).MachineGuid
+} catch {
+    $MachineId = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -ErrorAction SilentlyContinue).UUID
+}
+if (-not $MachineId) {
+    $MachineId = $env:COMPUTERNAME
+}
+
+# 5. 授权验证与配置匹配
 Write-Host "🔍 正在连接云端服务器验证授权并匹配加速节点..." -ForegroundColor Yellow
-$RequestUrl = "$API_URL/?key=$ConfirmKey&os=win32&arch=$PlatformArch"
+$RequestUrl = "$API_URL/?key=$ConfirmKey&os=win32&arch=$PlatformArch&machine_id=$MachineId"
 
 try {
     $ApiResponse = Invoke-RestMethod -Uri $RequestUrl -UseBasicParsing

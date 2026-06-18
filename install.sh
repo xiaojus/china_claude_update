@@ -78,10 +78,25 @@ else
     echo -e "\n${YELLOW}🎯 准备执行全新安装，目标路径: $TARGET_PATH${NC}"
 fi
 
-# 4. 授权验证与配置匹配
+# 4. 提取设备唯一标识符 (Machine ID)
+MACHINE_ID=""
+if [ "$OS" = "Darwin" ]; then
+    MACHINE_ID=$(ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { split($0, line, "\""); printf("%s\n", line[4]); }' || true)
+elif [ "$OS" = "Linux" ]; then
+    if [ -f /etc/machine-id ]; then
+        MACHINE_ID=$(cat /etc/machine-id)
+    elif [ -f /var/lib/dbus/machine-id ]; then
+        MACHINE_ID=$(cat /var/lib/dbus/machine-id)
+    fi
+fi
+if [ -z "$MACHINE_ID" ]; then
+    MACHINE_ID=$(hostname) # fallback
+fi
+
+# 5. 授权验证与配置匹配
 echo -e "${YELLOW}🔍 正在连接云端服务器验证授权并匹配加速节点...${NC}"
 
-REQUEST_URL="$API_URL/?key=$CONFIRM_KEY&os=$PLATFORM_OS&arch=$PLATFORM_ARCH"
+REQUEST_URL="$API_URL/?key=$CONFIRM_KEY&os=$PLATFORM_OS&arch=$PLATFORM_ARCH&machine_id=$MACHINE_ID"
 
 if ! HTTP_RESPONSE=$(curl -sS -w "\n%{http_code}" "$REQUEST_URL"); then
     echo -e "${RED}❌ 连接云端验证服务器失败，请检查网络或 DNS 解析。${NC}"
