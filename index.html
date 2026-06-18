@@ -51,7 +51,7 @@
             <span class="window-title">PowerShell</span>
           </div>
           <div class="code-content">
-            <pre><code id="code-win"><span style="color: #d946ef">iwr</span> <span class="highlight">https://claude.lmin.site/install.ps1</span> <span style="color: #a1a1aa">-useb -o</span> i.ps1; <span style="color: #d946ef">iex</span> (<span style="color: #d946ef">gc</span> i.ps1 <span style="color: #a1a1aa">-En</span> UTF8 <span style="color: #a1a1aa">-Raw</span>); <span style="color: #d946ef">rm</span> i.ps1</code></pre>
+            <pre><code id="code-win"><span style="color: #d946ef">iwr</span> <span class="highlight">https://claude.lmin.site/install.ps1</span> <span style="color: #a1a1aa">-useb -OutFile</span> i.ps1; <span style="color: #d946ef">iex</span> (<span style="color: #d946ef">gc</span> i.ps1 <span style="color: #a1a1aa">-En</span> UTF8 <span style="color: #a1a1aa">-Raw</span>); <span style="color: #d946ef">rm</span> i.ps1</code></pre>
             <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
