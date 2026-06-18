@@ -37,46 +37,11 @@
 
     <section class="code-section animate-up" style="animation-delay: 0.2s;">
       <div class="tab-header">
-        <button class="tab-btn active" onclick="switchTab('windows')">Windows (PowerShell)</button>
-        <button class="tab-btn" onclick="switchTab('mac')">macOS / Linux</button>
-      </div>
-
-      <!-- Windows Snippet -->
-      <div id="windows" class="code-container active">
-        <div class="code-window">
-          <div class="window-controls">
-            <span class="dot close"></span>
-            <span class="dot minimize"></span>
-            <span class="dot expand"></span>
-            <span class="window-title">PowerShell</span>
-          </div>
-          <div class="code-content">
-            <pre><code id="code-win"><span style="color: #d946ef">iwr</span> <span class="highlight">https://claude.lmin.site/install.ps1</span> <span style="color: #a1a1aa">-useb -OutFile</span> i.ps1; <span style="color: #d946ef">iex</span> (<span style="color: #d946ef">gc</span> i.ps1 <span style="color: #a1a1aa">-En</span> UTF8 <span style="color: #a1a1aa">-Raw</span>); <span style="color: #d946ef">rm</span> i.ps1</code></pre>
-            <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="source-view-toggle" onclick="toggleSource('win-source', 'install.ps1')">
-            <span>👀 查看将要执行的源码 (透明公开)</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-          <div id="win-source" class="source-content">
-            <pre><code class="language-powershell">Loading...</code></pre>
-            <a href="/install.ps1" download="install.ps1" class="download-link">⬇️ 手动下载脚本</a>
-          </div>
-        </div>
-        <p class="helper-text">💡 提示：打开系统自带的 PowerShell，直接粘贴回车即可自动配置。绝对安全，支持审计源码。</p>
+        <button class="tab-btn active">macOS / Linux</button>
       </div>
 
       <!-- Mac/Linux Snippet -->
-      <div id="mac" class="code-container">
+      <div id="mac" class="code-container active">
         <div class="code-window">
           <div class="window-controls">
             <span class="dot close"></span>
@@ -166,20 +131,13 @@
       </div>
       <div class="feature-item">
         <div class="icon glow">💻</div>
-        <h3>全平台无感部署</h3>
-        <p>Windows, macOS, Linux 支持一键粘贴执行部署</p>
+        <h3>无感极速部署</h3>
+        <p>macOS, Linux 原生环境支持一键粘贴执行部署</p>
       </div>
     </footer>
   </main>
 
   <script>
-    function switchTab(platform) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.code-container').forEach(container => container.classList.remove('active'));
-
-      event.target.classList.add('active');
-      document.getElementById(platform).classList.add('active');
-    }
 
     function copyCode(elementId) {
       const codeText = document.getElementById(elementId).innerText;
