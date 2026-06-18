@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Claude Code 国内直连升级客户端
 .DESCRIPTION
@@ -6,6 +6,7 @@
 #>
 
 $ErrorActionPreference = "Stop"
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # === 【配置区】API 请求网关地址 ===
 $API_URL = "https://claude-api.lmin.site/"
@@ -123,11 +124,13 @@ try {
 
     # 10. 初始化配置
     Write-Host "🔄 正在后台初始化系统配置..." -ForegroundColor Yellow
-    Start-Process -FilePath $TargetPath -ArgumentList "install --force" -WindowStyle Hidden -ErrorAction SilentlyContinue
+    Start-Process -FilePath $TargetPath -ArgumentList "install --force" -WorkingDirectory $env:USERPROFILE -WindowStyle Hidden -ErrorAction SilentlyContinue
 } finally {
     Set-Location -Path $env:USERPROFILE
-    Start-Sleep -Seconds 1
-    Remove-Item -Recurse -Force $TmpDir
+    Start-Sleep -Seconds 2
+    if (Test-Path $TmpDir) {
+        Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
+    }
 }
 
 Write-Host "====================================================" -ForegroundColor Cyan
