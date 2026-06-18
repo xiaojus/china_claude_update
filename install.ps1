@@ -1,4 +1,9 @@
-﻿<#
+param(
+    [Parameter(Position=0)]
+    [string]$Target = ""
+)
+
+<#
 .SYNOPSIS
     Claude Code 国内直连升级客户端
 .DESCRIPTION
@@ -6,6 +11,7 @@
 #>
 
 $ErrorActionPreference = "Stop"
+$ProgressPreference = 'SilentlyContinue'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # === 【配置区】API 请求网关地址 ===
@@ -19,10 +25,12 @@ Write-Host "====================================================" -ForegroundCol
 $Arch = $env:PROCESSOR_ARCHITECTURE
 $PlatformArch = ""
 
-if ($Arch -eq "AMD64") {
+if ($Arch -match "ARM64") {
+    $PlatformArch = "arm64"
+} elseif ($Arch -eq "AMD64") {
     $PlatformArch = "x64"
 } else {
-    Write-Host "❌ 不支持的架构: $Arch. 目前官方仅提供 Windows x64 二进制。" -ForegroundColor Red
+    Write-Host "❌ 不支持的架构: $Arch. 目前官方仅支持 Windows x64 或 arm64 二进制。" -ForegroundColor Red
     exit 1
 }
 
@@ -62,6 +70,9 @@ if (-not $MachineId) {
 # 5. 授权验证与配置匹配
 Write-Host "🔍 正在连接云端服务器验证授权并匹配加速节点..." -ForegroundColor Yellow
 $RequestUrl = "$API_URL/?key=$ConfirmKey&os=win32&arch=$PlatformArch&machine_id=$MachineId"
+if ($Target) {
+    $RequestUrl += "&target=$Target"
+}
 
 try {
     $ApiResponse = Invoke-RestMethod -Uri $RequestUrl -UseBasicParsing
@@ -134,14 +145,24 @@ try {
     }
 
     # 10. 初始化配置
-    Write-Host "🔄 正在后台初始化系统配置..." -ForegroundColor Yellow
-    Start-Process -FilePath $TargetPath -ArgumentList "install --force" -WorkingDirectory $env:USERPROFILE -WindowStyle Hidden -ErrorAction SilentlyContinue
+    Write-Host "🔄 正在调用官方内核进行终端集成与环境配置..." -ForegroundColor Yellow
+    if ($Target) {
+        & $TargetPath install $Target
+    } else {
+        & $TargetPath install
+    }
+    $installExitCode = $LASTEXITCODE
 } finally {
     Set-Location -Path $env:USERPROFILE
     Start-Sleep -Seconds 2
     if (Test-Path $TmpDir) {
         Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
     }
+}
+
+if ($installExitCode -ne 0 -and $null -ne $installExitCode) {
+    Write-Host "❌ 官方内核初始化异常 (Exit Code: $installExitCode)" -ForegroundColor Red
+    exit $installExitCode
 }
 
 Write-Host "====================================================" -ForegroundColor Cyan

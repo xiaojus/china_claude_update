@@ -51,7 +51,7 @@
             <span class="window-title">PowerShell</span>
           </div>
           <div class="code-content">
-            <pre><code id="code-win">powershell -NoProfile -ExecutionPolicy Bypass -Command "[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; irm <span class="highlight">https://claude.lmin.site/install.ps1</span> | iex"</code></pre>
+            <pre><code id="code-win">irm <span class="highlight">https://claude.lmin.site/install.ps1</span> | iex</code></pre>
             <button class="copy-btn" onclick="copyCode('code-win')" title="复制代码">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +72,7 @@
             <a href="/install.ps1" download="install.ps1" class="download-link">⬇️ 手动下载脚本</a>
           </div>
         </div>
-        <p class="helper-text">💡 提示：打开系统自带的 CMD 或 PowerShell 终端，直接粘贴回车即可自动执行。绝对安全，支持审计源码。</p>
+        <p class="helper-text">💡 提示：打开系统自带的 PowerShell，直接粘贴回车即可自动配置。绝对安全，支持审计源码。</p>
       </div>
 
       <!-- Mac/Linux Snippet -->

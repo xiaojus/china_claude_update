@@ -5,6 +5,8 @@
 
 set -e
 
+TARGET="$1"
+
 # === 【配置区】API 请求网关地址 ===
 API_URL="https://claude-api.lmin.site/"
 
@@ -14,6 +16,27 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# 检查下载器
+DOWNLOADER=""
+if command -v curl >/dev/null 2>&1; then
+    DOWNLOADER="curl"
+elif command -v wget >/dev/null 2>&1; then
+    DOWNLOADER="wget"
+else
+    echo -e "${RED}❌ 系统未安装 curl 或 wget，无法下载。${NC}"
+    exit 1
+fi
+
+download_file() {
+    local url="$1"
+    local output="$2"
+    if [ "$DOWNLOADER" = "curl" ]; then
+        if [ -n "$output" ]; then curl -# -fL -o "$output" "$url"; else curl -fsSL "$url"; fi
+    else
+        if [ -n "$output" ]; then wget -q --show-progress -O "$output" "$url"; else wget -q -O - "$url"; fi
+    fi
+}
 
 echo -e "${BLUE}====================================================${NC}"
 echo -e "${GREEN}✨ 欢迎使用 Claude Code 国内直连升级助手 ✨${NC}"
@@ -51,6 +74,20 @@ case "$ARCH" in
         exit 1
         ;;
 esac
+
+# 智能识别 Rosetta 2 和 musl 环境
+if [ "$PLATFORM_OS" = "darwin" ] && [ "$PLATFORM_ARCH" = "x64" ]; then
+    if [ "$(sysctl -n sysctl.proc_translated 2>/dev/null)" = "1" ]; then
+        PLATFORM_ARCH="arm64"
+        echo -e "${YELLOW}ℹ️ 检测到 Rosetta 2 环境，将自动为您下发原生 arm64 版本以获取最佳性能。${NC}"
+    fi
+fi
+
+if [ "$PLATFORM_OS" = "linux" ]; then
+    if [ -f /lib/libc.musl-x86_64.so.1 ] || [ -f /lib/libc.musl-aarch64.so.1 ] || ldd /bin/ls 2>&1 | grep -q musl; then
+        PLATFORM_ARCH="${PLATFORM_ARCH}-musl"
+    fi
+fi
 
 echo -e "${GREEN}✓ 环境检测通过: ${PLATFORM_OS}-${PLATFORM_ARCH}${NC}"
 
@@ -97,25 +134,26 @@ fi
 echo -e "${YELLOW}🔍 正在连接云端服务器验证授权并匹配加速节点...${NC}"
 
 REQUEST_URL="$API_URL/?key=$CONFIRM_KEY&os=$PLATFORM_OS&arch=$PLATFORM_ARCH&machine_id=$MACHINE_ID"
+if [ -n "$TARGET" ]; then
+    REQUEST_URL="$REQUEST_URL&target=$TARGET"
+fi
 
-if ! HTTP_RESPONSE=$(curl -sS -w "\n%{http_code}" "$REQUEST_URL"); then
+if [ "$DOWNLOADER" = "curl" ]; then
+    HTTP_BODY=$(curl -fsSL "$REQUEST_URL" || true)
+else
+    HTTP_BODY=$(wget -qO- "$REQUEST_URL" || true)
+fi
+
+if [ -z "$HTTP_BODY" ]; then
     echo -e "${RED}❌ 连接云端验证服务器失败，请检查网络或 DNS 解析。${NC}"
     exit 1
 fi
-HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed '$d')
-HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tail -n1)
 
-if [ "$HTTP_STATUS" -ne 200 ]; then
-    echo -e "${RED}❌ 云端服务器返回异常状态码: $HTTP_STATUS${NC}"
-    echo -e "${RED}响应内容: $HTTP_BODY${NC}"
-    exit 1
-fi
-
-SUCCESS=$(echo "$HTTP_BODY" | grep -o '"success":\(true\|false\)' | cut -d':' -f2)
-MESSAGE=$(echo "$HTTP_BODY" | grep -o '"message":"[^"]*"' | cut -d'"' -f4)
+SUCCESS=$(echo "$HTTP_BODY" | grep -o '"success":\(true\|false\)' | cut -d':' -f2 || true)
+MESSAGE=$(echo "$HTTP_BODY" | grep -o '"message":"[^"]*"' | cut -d'"' -f4 || true)
 
 if [ "$SUCCESS" != "true" ]; then
-    echo -e "${RED}$MESSAGE${NC}"
+    echo -e "${RED}${MESSAGE:-"云端验证异常"}${NC}"
     exit 1
 fi
 
@@ -148,7 +186,7 @@ TMP_DIR=$(mktemp -d)
 cd "$TMP_DIR"
 
 echo -e "${YELLOW}📥 正在通过骨干网高速下载原生二进制包...${NC}"
-curl -# -L -o "payload.tgz" "$TARBALL_URL"
+download_file "$TARBALL_URL" "payload.tgz"
 
 echo -e "${YELLOW}📦 正在执行解压与二进制提取...${NC}"
 tar -zxf payload.tgz
@@ -189,8 +227,8 @@ if [[ ":$PATH:" != *":$(dirname "$TARGET_PATH"):"* ]]; then
 fi
 
 # 9. 初始化配置
-echo -e "${YELLOW}🔄 正在后台初始化系统配置...${NC}"
-"$TARGET_PATH" install --force >/dev/null 2>&1 &
+echo -e "${YELLOW}🔄 正在调用官方内核进行终端集成与环境配置...${NC}"
+"$TARGET_PATH" install ${TARGET:+"$TARGET"}
 
 cd "$HOME"
 rm -rf "$TMP_DIR"
