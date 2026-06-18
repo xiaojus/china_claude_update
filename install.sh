@@ -227,8 +227,16 @@ if [[ ":$PATH:" != *":$(dirname "$TARGET_PATH"):"* ]]; then
 fi
 
 # 9. 初始化配置
-echo -e "${YELLOW}🔄 正在调用官方内核进行终端集成与环境配置...${NC}"
-"$TARGET_PATH" install ${TARGET:+"$TARGET"}
+echo -e "${YELLOW}🔄 正在配置本地内核环境 (绕过官方极慢的安装节点)...${NC}"
+"$TARGET_PATH" config set autoUpdater false 2>/dev/null || true
+
+# 验证安装是否成功
+if "$TARGET_PATH" --version >/dev/null 2>&1; then
+    echo -e "${GREEN}✓ 本地内核已就绪: $("$TARGET_PATH" --version)${NC}"
+else
+    echo -e "${RED}❌ 内核启动失败，请检查环境或联系支持。${NC}"
+    exit 1
+fi
 
 cd "$HOME"
 rm -rf "$TMP_DIR"

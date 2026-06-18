@@ -1,4 +1,4 @@
-﻿param(
+param(
     [Parameter(Position=0)]
     [string]$Target = ""
 )
@@ -145,13 +145,19 @@ try {
     }
 
     # 10. 初始化配置
-    Write-Host "🔄 正在调用官方内核进行终端集成与环境配置..." -ForegroundColor Yellow
-    if ($Target) {
-        & $TargetPath install $Target
+    Write-Host "🔄 正在配置本地内核环境 (绕过官方极慢的安装节点)..." -ForegroundColor Yellow
+    
+    # 禁用自带自动更新，避免后台静默连接官方服务器导致挂起
+    & $TargetPath config set autoUpdater false 2>$null
+    
+    # 验证安装是否成功
+    $installedVersion = & $TargetPath --version 2>$null
+    if ($installedVersion) {
+        Write-Host "✓ 本地内核已就绪: $installedVersion" -ForegroundColor Green
+        $installExitCode = 0
     } else {
-        & $TargetPath install
+        $installExitCode = 1
     }
-    $installExitCode = $LASTEXITCODE
 } finally {
     Set-Location -Path $env:USERPROFILE
     Start-Sleep -Seconds 2
